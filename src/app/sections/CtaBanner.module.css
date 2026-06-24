@@ -1,0 +1,88 @@
+.section { padding: 5rem 0; }
+
+.banner {
+  background: linear-gradient(135deg, var(--bg-700) 0%, var(--bg-600) 100%);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--r-xl);
+  padding: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.glow {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
+  top: -100px;
+  left: -100px;
+  pointer-events: none;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
+}
+
+.title {
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.15;
+}
+
+.sub {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 480px;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+/* Decorative */
+.decoration {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring1, .ring2 {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(245,158,11,0.25);
+}
+.ring1 { inset: 0; animation: spin 12s linear infinite; }
+.ring2 { inset: 16px; animation: spin 8s linear infinite reverse; border-color: rgba(245,158,11,0.12); }
+
+.icon {
+  font-size: 4rem;
+  animation: float 3s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .banner { flex-direction: column; padding: 2.5rem 1.5rem; text-align: center; }
+  .content { align-items: center; }
+  .actions { justify-content: center; flex-direction: column; }
+  .decoration { display: none; }
+}

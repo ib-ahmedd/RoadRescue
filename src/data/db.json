@@ -1,0 +1,115 @@
+{
+  "providers": [
+    {
+      "id": "SP-001",
+      "name": "Apex Towing & Recovery",
+      "phone": "+1 (555) 012-3456",
+      "vehicle": "Flatbed Truck (Ford F-650)",
+      "plate": "APX-7721",
+      "speciality": "towing",
+      "rating": 4.9,
+      "reviews": 184,
+      "status": "Available",
+      "avatar": "AT"
+    },
+    {
+      "id": "SP-002",
+      "name": "QuickStart Battery Services",
+      "phone": "+1 (555) 019-8832",
+      "vehicle": "Service Van (Ram ProMaster)",
+      "plate": "BAT-9912",
+      "speciality": "battery",
+      "rating": 4.8,
+      "reviews": 92,
+      "status": "Available",
+      "avatar": "QB"
+    },
+    {
+      "id": "SP-003",
+      "name": "Metro Tire Pros",
+      "phone": "+1 (555) 014-9988",
+      "vehicle": "Mobile Tire Unit (Chevy Express)",
+      "plate": "TIRE-883",
+      "speciality": "flat-tire",
+      "rating": 4.7,
+      "reviews": 120,
+      "status": "Available",
+      "avatar": "MT"
+    },
+    {
+      "id": "SP-004",
+      "name": "Elite Locksmiths",
+      "phone": "+1 (555) 016-5544",
+      "vehicle": "Service Hatchback (Toyota Prius)",
+      "plate": "LOCK-442",
+      "speciality": "lockout",
+      "rating": 4.9,
+      "reviews": 245,
+      "status": "Available",
+      "avatar": "EL"
+    },
+    {
+      "id": "SP-005",
+      "name": "Rapid Fuel & Repair",
+      "phone": "+1 (555) 011-2233",
+      "vehicle": "Light Utility Truck (Ford Ranger)",
+      "plate": "RAP-223",
+      "speciality": "fuel",
+      "rating": 4.6,
+      "reviews": 67,
+      "status": "Available",
+      "avatar": "RF"
+    }
+  ],
+  "requests": [
+    {
+      "id": "RR-DEMO1",
+      "name": "Sarah Connor",
+      "phone": "+1 (555) 232-1984",
+      "email": "sarah.c@skymail.com",
+      "service": "towing",
+      "vehicleType": "SUV / Crossover",
+      "vehicleMake": "Jeep",
+      "vehicleModel": "Cherokee",
+      "vehicleYear": "2018",
+      "vehicleColor": "Dark Grey",
+      "location": "Mile Marker 14, I-85 North, Atlanta, GA",
+      "landmark": "Near Exit 25, under the overpass",
+      "notes": "Engine overheated, steam coming out. Coolant seems empty.",
+      "status": "received",
+      "assignedProvider": null,
+      "contacted": false,
+      "createdAt": "2026-06-23T20:30:00.000Z"
+    },
+    {
+      "id": "RR-DEMO2",
+      "name": "John Doe",
+      "phone": "+1 (555) 987-6543",
+      "email": "john.doe@gmail.com",
+      "service": "flat-tire",
+      "vehicleType": "Sedan",
+      "vehicleMake": "Honda",
+      "vehicleModel": "Civic",
+      "vehicleYear": "2015",
+      "vehicleColor": "Silver",
+      "location": "582 Peachtree St NE, Atlanta, GA",
+      "landmark": "In front of the Fox Theatre",
+      "notes": "Ran over a nail. Spare tire is in the trunk but I don't have a jack.",
+      "status": "matched",
+      "assignedProvider": {
+        "id": "SP-003",
+        "name": "Metro Tire Pros",
+        "phone": "+1 (555) 014-9988",
+        "vehicle": "Mobile Tire Unit (Chevy Express)",
+        "plate": "TIRE-883",
+        "speciality": "flat-tire",
+        "rating": 4.7,
+        "reviews": 120,
+        "status": "Dispatched",
+        "avatar": "MT"
+      },
+      "contacted": true,
+      "createdAt": "2026-06-23T20:45:00.000Z"
+    }
+  ]
+}

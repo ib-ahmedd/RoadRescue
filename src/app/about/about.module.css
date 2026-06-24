@@ -1,0 +1,206 @@
+.hero {
+  padding: 5rem 0;
+  text-align: center;
+  background: radial-gradient(circle at top, rgba(245,158,11,0.08) 0%, transparent 60%);
+}
+
+.heroTitle {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 1rem 0;
+  line-height: 1.15;
+}
+
+.heroSub {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Mission */
+.mission {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.missionGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.missionText {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  margin-top: 1rem;
+}
+
+.missionStats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.missionStat {
+  display: flex;
+  flex-direction: column;
+}
+
+.missionStatVal {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--amber);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.missionStatLabel {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.missionVisual {
+  position: relative;
+  height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.missionRing1 {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255,255,255,0.08);
+  animation: spin 30s linear infinite;
+}
+
+.missionRing2 {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 1px solid rgba(245,158,11,0.15);
+  background: rgba(245,158,11,0.02);
+}
+
+.missionEmoji {
+  font-size: 4.5rem;
+  z-index: 2;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+
+/* Values */
+.valuesSection {
+  background: var(--bg-800);
+}
+
+.valueCard {
+  background: var(--bg-900);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 2rem;
+  transition: border-color var(--duration) var(--ease), transform var(--duration) var(--ease);
+}
+
+.valueCard:hover {
+  border-color: var(--amber);
+  transform: translateY(-2px);
+}
+
+.valueIcon {
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
+  display: inline-block;
+}
+
+.valueTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.valueDesc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Team */
+.teamSection {
+  border-top: 1px solid var(--border);
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.teamCard {
+  background: var(--bg-800);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform var(--duration) var(--ease);
+}
+
+.teamCard:hover {
+  transform: translateY(-2px);
+}
+
+.teamAvatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--bg-600), var(--bg-500));
+  color: var(--amber);
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  border: 2px solid rgba(245,158,11,0.2);
+}
+
+.teamName {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.teamRole {
+  font-size: 0.8rem;
+  color: var(--amber);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.teamBio {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .missionGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

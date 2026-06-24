@@ -1,0 +1,119 @@
+.section {
+  background: var(--bg-800);
+  padding: 5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+.section::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245,158,11,0.05) 0%, transparent 70%);
+  top: -200px;
+  right: -200px;
+  pointer-events: none;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+.sub {
+  color: var(--text-secondary);
+  max-width: 480px;
+  margin-top: 1rem;
+}
+
+/* Steps */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  position: relative;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.25rem;
+  padding: 0 1.5rem;
+  position: relative;
+}
+
+/* Connector between steps */
+.connector {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--amber-dark), transparent);
+  z-index: 0;
+}
+
+.stepIcon {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.stepEmoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: var(--bg-600);
+  border: 2px solid var(--amber);
+  border-radius: 50%;
+  font-size: 1.5rem;
+  box-shadow: 0 0 24px rgba(245,158,11,0.2);
+}
+
+.stepNum {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 22px;
+  height: 22px;
+  background: var(--amber);
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stepBody { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.stepTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stepDesc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+@media (max-width: 768px) {
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .connector { display: none; }
+  .step { flex-direction: row; text-align: left; align-items: flex-start; }
+  .stepBody { flex: 1; }
+}

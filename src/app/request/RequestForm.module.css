@@ -1,0 +1,224 @@
+.page {
+  padding: 3rem 0 5rem;
+  min-height: calc(100vh - 80px);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* ── Left Panel ─────────────────────────────────────────── */
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 100px;
+}
+
+.title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.sub {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* Steps indicator */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--bg-800);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 0.75rem 1.25rem;
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  position: relative;
+}
+.stepItem:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  bottom: -6px;
+  width: 1.5px;
+  height: 12px;
+  background: var(--border);
+}
+
+.stepBubble {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+.stepActive .stepBubble {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: #0a0a0a;
+  box-shadow: 0 0 12px rgba(245,158,11,0.4);
+}
+.stepDone .stepBubble {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+
+.stepLabel {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+.stepActive .stepLabel { color: var(--amber); font-weight: 600; }
+.stepDone  .stepLabel  { color: var(--success); }
+
+/* ETA card */
+.etaCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--r-md);
+  padding: 1rem 1.25rem;
+  animation: fadeInUp 0.3s ease;
+}
+.etaDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--success);
+  flex-shrink: 0;
+  animation: ping 2s cubic-bezier(0,0,0.2,1) infinite;
+}
+.etaLabel { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+.etaTime  { font-size: 1.1rem; font-weight: 700; color: var(--success); }
+.etaPrice { font-size: 1rem; font-weight: 700; color: var(--amber); }
+
+/* Trust */
+.trust { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.trustBadge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  background: var(--bg-700);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+/* ── Right Panel ────────────────────────────────────────── */
+.right {}
+
+.formCard {
+  background: var(--bg-800);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 2.5rem;
+}
+
+.stepContent { display: flex; flex-direction: column; gap: 0; }
+.stepTitle { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; }
+.stepSub   { font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.75rem; }
+
+/* Service grid */
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.serviceCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.15rem;
+  background: var(--bg-700);
+  border: 1.5px solid var(--border-md);
+  border-radius: var(--r-md);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.serviceCard:hover { border-color: var(--amber); background: rgba(245,158,11,0.06); }
+.serviceSelected   { border-color: var(--amber) !important; background: rgba(245,158,11,0.1) !important; box-shadow: 0 0 0 1px var(--amber); }
+
+.serviceLabel { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
+.serviceTime  { font-size: 0.75rem; color: var(--text-muted); }
+
+/* Field groups */
+.fieldGroups { display: flex; flex-direction: column; gap: 1.75rem; margin-bottom: 1.5rem; }
+.fieldGroup  { display: flex; flex-direction: column; gap: 0.85rem; }
+.groupTitle  { font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+/* Nav buttons */
+.navBtns { display: flex; gap: 0.75rem; margin-top: 1.75rem; }
+
+/* Summary */
+.summary {
+  background: var(--bg-700);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.summaryRow:last-child { border-bottom: none; }
+.summaryKey { font-size: 0.82rem; color: var(--text-muted); font-weight: 500; flex-shrink: 0; }
+.summaryVal { font-size: 0.9rem; color: var(--text-primary); font-weight: 600; text-align: right; }
+
+.disclaimer {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  padding: 0.75rem 1rem;
+  background: var(--bg-700);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .layout { grid-template-columns: 1fr; }
+  .left { position: static; }
+}
+@media (max-width: 640px) {
+  .formCard { padding: 1.5rem; }
+  .serviceGrid { grid-template-columns: 1fr; }
+  .row { grid-template-columns: 1fr; }
+}
