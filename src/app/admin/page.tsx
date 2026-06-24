@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
+import { API_BASE_URL } from "@/lib/api";
 import styles from "./AdminDashboard.module.css";
 
 interface Provider {
@@ -59,7 +60,7 @@ export default function AdminPage() {
   // Fetch Requests
   const fetchRequests = useCallback(async (isPoll = false) => {
     try {
-      const res = await fetch("/api/requests");
+      const res = await fetch(`${API_BASE_URL}/api/requests`);
       if (res.ok) {
         const data = await res.json();
         setRequests(data);
@@ -74,7 +75,7 @@ export default function AdminPage() {
   // Fetch Providers
   const fetchProviders = useCallback(async () => {
     try {
-      const res = await fetch("/api/providers");
+      const res = await fetch(`${API_BASE_URL}/api/providers`);
       if (res.ok) {
         const data = await res.json();
         setProviders(data);
@@ -138,7 +139,7 @@ export default function AdminPage() {
   // Patch Request Helper
   const handleUpdateRequest = async (id: string, updates: Partial<RequestData>) => {
     try {
-      const res = await fetch("/api/requests", {
+      const res = await fetch(`${API_BASE_URL}/api/requests`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, ...updates }),

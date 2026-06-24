@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/lib/api";
 import Link from "next/link";
 import styles from "./TrackView.module.css";
 
@@ -46,6 +47,16 @@ const STATUSES = [
   { key: "completed", label: "Job Completed",        icon: "✅", desc: "Your assistance is complete. Drive safe!" },
 ];
 
+const DISPUTE_REASONS = [
+  "Technician did not arrive",
+  "Service was incomplete or unsatisfactory",
+  "Technician was unprofessional or rude",
+  "Charged incorrectly or overcharged",
+  "Technician arrived very late",
+  "Vehicle was damaged during service",
+  "Other issue",
+];
+
 export default function TrackView() {
   const params = useSearchParams();
   const router = useRouter();
@@ -57,9 +68,21 @@ export default function TrackView() {
   const [lookupId, setLookupId] = useState("");
   const [eta, setEta] = useState(15);
 
+  // Confirm completion modal
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmSubmitting, setConfirmSubmitting] = useState(false);
+
+  // Dispute modal
+  const [showDisputeModal, setShowDisputeModal] = useState(false);
+  const [disputeReason, setDisputeReason] = useState(DISPUTE_REASONS[0]);
+  const [disputeDescription, setDisputeDescription] = useState("");
+  const [disputeSubmitting, setDisputeSubmitting] = useState(false);
+  const [disputeSuccess, setDisputeSuccess] = useState(false);
+  const [disputeId, setDisputeId] = useState("");
+
   const fetchRequest = useCallback(async (id: string, isPoll = false) => {
     try {
-      const response = await fetch(`/api/requests?id=${id}`);
+      const response = await fetch(`${API_BASE_URL}/api/requests?id=${id}`);
       if (response.ok) {
         const data = await response.json();
         setRequest(data);
@@ -95,7 +118,7 @@ export default function TrackView() {
 
       const interval = setInterval(() => {
         fetchRequest(requestId, true);
-      }, 3000); // Poll every 3 seconds
+      }, 3000);
 
       return () => clearInterval(interval);
     } else {
@@ -112,8 +135,13 @@ export default function TrackView() {
 
   const handleDemoStatus = async (newStatusKey: string) => {
     if (!request) return;
+    // If advancing to "completed", show the confirmation modal instead
+    if (newStatusKey === "completed") {
+      setShowConfirmModal(true);
+      return;
+    }
     try {
-      const res = await fetch("/api/requests", {
+      const res = await fetch(`${API_BASE_URL}/api/requests`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: request.id, status: newStatusKey }),
@@ -124,6 +152,56 @@ export default function TrackView() {
       }
     } catch (err) {
       console.error("Failed to update status:", err);
+    }
+  };
+
+  const handleConfirmCompletion = async () => {
+    if (!request) return;
+    setConfirmSubmitting(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/requests`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: request.id, status: "completed" }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setRequest(data);
+        setShowConfirmModal(false);
+      }
+    } catch (err) {
+      console.error("Failed to confirm completion:", err);
+    } finally {
+      setConfirmSubmitting(false);
+    }
+  };
+
+  const handleSubmitDispute = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!request || !disputeDescription.trim()) return;
+    setDisputeSubmitting(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/disputes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          requestId: request.id,
+          customerName: request.name,
+          customerPhone: request.phone,
+          reason: disputeReason,
+          description: disputeDescription.trim(),
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setDisputeId(data.dispute?.id || "");
+        setDisputeSuccess(true);
+        setDisputeDescription("");
+      }
+    } catch (err) {
+      console.error("Failed to submit dispute:", err);
+    } finally {
+      setDisputeSubmitting(false);
     }
   };
 
@@ -210,6 +288,43 @@ export default function TrackView() {
                   <p className={styles.statusDesc}>{currentStep.desc}</p>
                 </div>
               </div>
+
+              {/* Completion confirmation banner — shown when status is "arrived" */}
+              {request.status === "arrived" && (
+                <div className={styles.confirmBanner}>
+                  <div className={styles.confirmBannerIcon}>📍</div>
+                  <div className={styles.confirmBannerText}>
+                    <p className={styles.confirmBannerTitle}>Technician has arrived!</p>
+                    <p className={styles.confirmBannerSub}>Once the job is done, confirm completion below.</p>
+                  </div>
+                  <button
+                    id="confirm-completion-btn"
+                    className="btn btn-success btn-sm"
+                    onClick={() => setShowConfirmModal(true)}
+                  >
+                    ✅ Confirm Completion
+                  </button>
+                </div>
+              )}
+
+              {/* Completed — show dispute option */}
+              {request.status === "completed" && (
+                <div className={styles.completedBanner}>
+                  <span style={{ fontSize: "1.5rem" }}>🎉</span>
+                  <div>
+                    <p className={styles.confirmBannerTitle}>Job Completed — Thank you!</p>
+                    <p className={styles.confirmBannerSub}>Encountered an issue?</p>
+                  </div>
+                  <button
+                    id="raise-dispute-btn"
+                    className="btn btn-outline btn-sm"
+                    style={{ borderColor: "rgba(239,68,68,0.4)", color: "var(--danger)", flexShrink: 0 }}
+                    onClick={() => { setDisputeSuccess(false); setShowDisputeModal(true); }}
+                  >
+                    ⚠️ Raise Dispute
+                  </button>
+                </div>
+              )}
 
               {/* ETA Card */}
               {request.status !== "completed" && (
@@ -387,6 +502,127 @@ export default function TrackView() {
           </div>
         )}
       </div>
+
+      {/* ── Confirm Completion Modal ── */}
+      {showConfirmModal && (
+        <div className={styles.modalOverlay} onClick={() => !confirmSubmitting && setShowConfirmModal(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalIcon}>✅</div>
+            <h3 className={styles.modalTitle}>Confirm Job Completion</h3>
+            <p className={styles.modalDesc}>
+              Please confirm that the technician has completed the service to your satisfaction. 
+              Once confirmed, this request will be marked as <strong>completed</strong>.
+            </p>
+            <div className={styles.modalNote}>
+              <span>⚠️</span>
+              <span>If you experienced any issues, you can raise a dispute after confirming.</span>
+            </div>
+            <div className={styles.modalActions}>
+              <button
+                id="cancel-confirm-btn"
+                className="btn btn-outline"
+                onClick={() => setShowConfirmModal(false)}
+                disabled={confirmSubmitting}
+              >
+                Not Yet
+              </button>
+              <button
+                id="submit-confirm-btn"
+                className="btn btn-success"
+                onClick={handleConfirmCompletion}
+                disabled={confirmSubmitting}
+              >
+                {confirmSubmitting ? "Confirming..." : "✅ Yes, Job Completed"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Raise Dispute Modal ── */}
+      {showDisputeModal && (
+        <div className={styles.modalOverlay} onClick={() => !disputeSubmitting && setShowDisputeModal(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            {disputeSuccess ? (
+              <>
+                <div className={styles.modalIcon}>🗂️</div>
+                <h3 className={styles.modalTitle}>Dispute Submitted</h3>
+                <p className={styles.modalDesc}>
+                  Your dispute has been logged and our team will review it shortly.
+                </p>
+                {disputeId && (
+                  <div className={styles.disputeIdBadge}>
+                    Dispute ID: <strong style={{ fontFamily: "monospace", color: "var(--amber)" }}>{disputeId}</strong>
+                  </div>
+                )}
+                <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)", marginTop: "0.5rem" }}>
+                  Keep this ID for reference. We&apos;ll contact you at <strong>{request?.phone}</strong>.
+                </p>
+                <div className={styles.modalActions} style={{ marginTop: "1.5rem" }}>
+                  <button className="btn btn-primary" onClick={() => setShowDisputeModal(false)}>
+                    Close
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={styles.modalIcon} style={{ background: "rgba(239,68,68,0.1)", color: "var(--danger)" }}>⚠️</div>
+                <h3 className={styles.modalTitle}>Raise a Dispute</h3>
+                <p className={styles.modalDesc}>
+                  We&apos;re sorry you had an issue. Please describe what went wrong and our team will investigate.
+                </p>
+                <form onSubmit={handleSubmitDispute} className={styles.disputeForm}>
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="dispute-reason">Reason for Dispute *</label>
+                    <select
+                      id="dispute-reason"
+                      className="form-input"
+                      style={{ background: "#0c1020" }}
+                      value={disputeReason}
+                      onChange={(e) => setDisputeReason(e.target.value)}
+                    >
+                      {DISPUTE_REASONS.map((r) => (
+                        <option key={r} value={r}>{r}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group" style={{ marginTop: "1rem" }}>
+                    <label className="form-label" htmlFor="dispute-description">Describe the Issue *</label>
+                    <textarea
+                      id="dispute-description"
+                      className="form-input"
+                      rows={4}
+                      placeholder="Please provide as much detail as possible about what happened..."
+                      value={disputeDescription}
+                      onChange={(e) => setDisputeDescription(e.target.value)}
+                      required
+                      style={{ resize: "vertical" }}
+                    />
+                  </div>
+                  <div className={styles.modalActions} style={{ marginTop: "1.25rem" }}>
+                    <button
+                      type="button"
+                      className="btn btn-outline"
+                      onClick={() => setShowDisputeModal(false)}
+                      disabled={disputeSubmitting}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      id="submit-dispute-btn"
+                      type="submit"
+                      className="btn btn-danger"
+                      disabled={disputeSubmitting || !disputeDescription.trim()}
+                    >
+                      {disputeSubmitting ? "Submitting..." : "⚠️ Submit Dispute"}
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

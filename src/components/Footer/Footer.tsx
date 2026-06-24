@@ -12,7 +12,7 @@ const company  = [
   { label: "About Us",   href: "/about" },
   { label: "Contact",    href: "/contact" },
   { label: "Admin Portal", href: "/admin" },
-  { label: "Careers",    href: "#" },
+  { label: "Join Our Team", href: "/join" },
 ];
 const legal = [
   { label: "Privacy Policy",  href: "#" },

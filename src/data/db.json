@@ -110,6 +110,25 @@
       },
       "contacted": true,
       "createdAt": "2026-06-23T20:45:00.000Z"
+    },
+    {
+      "id": "RR-FQLDKU",
+      "name": "ahmed ibrahim",
+      "phone": "08161615860",
+      "email": "ahmed1768476@gmail.com",
+      "service": "battery",
+      "vehicleType": "Sedan",
+      "vehicleMake": "Toyota",
+      "vehicleModel": "Camry",
+      "vehicleYear": "2015",
+      "vehicleColor": "black",
+      "location": "no 1 kogun/kuriga street ndc kaduna",
+      "landmark": "kaduna trade fair",
+      "notes": "",
+      "status": "received",
+      "assignedProvider": null,
+      "contacted": false,
+      "createdAt": "2026-06-24T16:15:08.151Z"
     }
   ]
 }

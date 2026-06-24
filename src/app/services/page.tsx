@@ -234,7 +234,7 @@ export default function ServicesPage() {
                 {faqs.map((faq) => (
                   <div key={faq.q} className={styles.faqCard}>
                     <h4 className={styles.faqQ}>{faq.q}</h4>
-                    <p className={styles.faqA}>{faq.A || faq.a}</p>
+                    <p className={styles.faqA}>{faq.a}</p>
                   </div>
                 ))}
               </div>

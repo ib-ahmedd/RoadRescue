@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { API_BASE_URL } from "@/lib/api";
 import styles from "./contact.module.css";
 
 const subjects = [
@@ -27,7 +28,7 @@ export default function ContactForm() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch(`${API_BASE_URL}/api/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

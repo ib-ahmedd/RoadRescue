@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/lib/api";
 import styles from "./RequestForm.module.css";
 
 const services = [
@@ -34,6 +35,11 @@ export default function RequestForm() {
     email: "",
   });
 
+  // Geolocation state
+  const [geoState, setGeoState] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [geoError, setGeoError] = useState("");
+  const [geoCoords, setGeoCoords] = useState<{ lat: number; lng: number } | null>(null);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -44,6 +50,50 @@ export default function RequestForm() {
     }
   }, []);
 
+  // Reverse-geocode coordinates → human-readable address using Nominatim
+  const reverseGeocode = useCallback(async (lat: number, lng: number) => {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
+        { headers: { "Accept-Language": "en" } }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        return (data.display_name as string) || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      }
+    } catch {
+      // fall through
+    }
+    return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  }, []);
+
+  const handleDetectLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      setGeoState("error");
+      setGeoError("Geolocation is not supported by your browser.");
+      return;
+    }
+    setGeoState("loading");
+    setGeoError("");
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude: lat, longitude: lng } = pos.coords;
+        setGeoCoords({ lat, lng });
+        const address = await reverseGeocode(lat, lng);
+        setForm((prev) => ({ ...prev, location: address }));
+        setGeoState("success");
+      },
+      (err) => {
+        setGeoState("error");
+        if (err.code === 1) setGeoError("Location access denied. Please allow location in your browser.");
+        else if (err.code === 2) setGeoError("Location unavailable. Please enter it manually.");
+        else setGeoError("Location request timed out. Please try again.");
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  }, [reverseGeocode]);
+
   const selectedService = services.find((s) => s.value === form.service);
 
   const update = (field: string, value: string) =>
@@ -53,7 +103,7 @@ export default function RequestForm() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("/api/requests", {
+      const response = await fetch(`${API_BASE_URL}/api/requests`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -205,10 +255,64 @@ export default function RequestForm() {
 
                       <div className={styles.fieldGroup}>
                         <h3 className={styles.groupTitle}>📍 Your Location</h3>
+                        
+                        {/* Auto-detect button */}
+                        <button
+                          type="button"
+                          id="detect-location-btn"
+                          className={styles.detectBtn}
+                          onClick={handleDetectLocation}
+                          disabled={geoState === "loading"}
+                        >
+                          {geoState === "loading" ? (
+                            <>
+                              <span className={styles.detectSpinner} />
+                              <span>Detecting your location...</span>
+                            </>
+                          ) : geoState === "success" ? (
+                            <>
+                              <span>✅</span>
+                              <span>Location detected — click to refresh</span>
+                            </>
+                          ) : (
+                            <>
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+                                <circle cx="12" cy="12" r="9" strokeDasharray="3 2" opacity="0.4"/>
+                              </svg>
+                              <span>📡 Auto-Detect My Location</span>
+                            </>
+                          )}
+                        </button>
+
+                        {/* GPS error message */}
+                        {geoState === "error" && (
+                          <div className={styles.geoError}>
+                            <span>⚠️</span>
+                            <span>{geoError}</span>
+                          </div>
+                        )}
+
+                        {/* GPS coords chip */}
+                        {geoState === "success" && geoCoords && (
+                          <div className={styles.geoChip}>
+                            <span>🛰️</span>
+                            <span>GPS: {geoCoords.lat.toFixed(5)}, {geoCoords.lng.toFixed(5)}</span>
+                            <span className={styles.geoAccurate}>High Accuracy</span>
+                          </div>
+                        )}
+
+                        <div className={styles.orDivider}>
+                          <span className={styles.orLine} />
+                          <span className={styles.orText}>or enter manually</span>
+                          <span className={styles.orLine} />
+                        </div>
+
                         <div className="form-group">
                           <label className="form-label" htmlFor="req-location">Street Address or GPS *</label>
                           <input id="req-location" className="form-input" type="text" placeholder="123 Main St, Atlanta, GA"
-                            value={form.location} onChange={(e) => update("location", e.target.value)} required />
+                            value={form.location} onChange={(e) => { update("location", e.target.value); if (geoState === "success") setGeoState("idle"); }} required />
                         </div>
                         <div className="form-group">
                           <label className="form-label" htmlFor="req-landmark">Nearby Landmark</label>
