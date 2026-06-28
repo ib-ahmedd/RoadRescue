@@ -3,15 +3,16 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/lib/api";
+import { LOCALE, SERVICE_PRICES } from "@/lib/locale";
 import styles from "./RequestForm.module.css";
 
 const services = [
-  { value: "towing",    label: "🚛 Towing",           time: "~30 min", price: "From $75" },
-  { value: "battery",   label: "🔋 Battery Jump Start", time: "~20 min", price: "From $35" },
-  { value: "flat-tire", label: "🔧 Flat Tire Change",   time: "~25 min", price: "From $45" },
-  { value: "fuel",      label: "⛽ Fuel Delivery",      time: "~25 min", price: "From $40" },
-  { value: "lockout",   label: "🔑 Lockout Service",    time: "~35 min", price: "From $55" },
-  { value: "repair",    label: "🔩 Minor Repair",       time: "~45 min", price: "From $60" },
+  { value: "towing",    label: "🚛 Towing",           time: "~30 min", price: SERVICE_PRICES.towing },
+  { value: "battery",   label: "🔋 Battery Jump Start", time: "~20 min", price: SERVICE_PRICES.battery },
+  { value: "flat-tire", label: "🔧 Flat Tire Change",   time: "~25 min", price: SERVICE_PRICES["flat-tire"] },
+  { value: "fuel",      label: "⛽ Fuel Delivery",      time: "~25 min", price: SERVICE_PRICES.fuel },
+  { value: "lockout",   label: "🔑 Lockout Service",    time: "~35 min", price: SERVICE_PRICES.lockout },
+  { value: "repair",    label: "🔩 Minor Repair",       time: "~45 min", price: SERVICE_PRICES.repair },
 ];
 
 const vehicleTypes = ["Sedan", "SUV / Crossover", "Truck / Pickup", "Van / Minivan", "Motorcycle", "RV / Motorhome", "Other"];
@@ -238,12 +239,12 @@ export default function RequestForm() {
                         <h3 className={styles.groupTitle}>📋 Contact Info</h3>
                         <div className="form-group">
                           <label className="form-label" htmlFor="req-name">Full Name *</label>
-                          <input id="req-name" className="form-input" type="text" placeholder="John Smith"
+                          <input id="req-name" className="form-input" type="text" placeholder={LOCALE.namePlaceholder}
                             value={form.name} onChange={(e) => update("name", e.target.value)} required />
                         </div>
                         <div className="form-group">
                           <label className="form-label" htmlFor="req-phone">Phone Number *</label>
-                          <input id="req-phone" className="form-input" type="tel" placeholder="+1 (555) 000-0000"
+                          <input id="req-phone" className="form-input" type="tel" placeholder={LOCALE.phonePlaceholder}
                             value={form.phone} onChange={(e) => update("phone", e.target.value)} required />
                         </div>
                         <div className="form-group">
@@ -311,12 +312,12 @@ export default function RequestForm() {
 
                         <div className="form-group">
                           <label className="form-label" htmlFor="req-location">Street Address or GPS *</label>
-                          <input id="req-location" className="form-input" type="text" placeholder="123 Main St, Atlanta, GA"
+                          <input id="req-location" className="form-input" type="text" placeholder={LOCALE.locationPlaceholder}
                             value={form.location} onChange={(e) => { update("location", e.target.value); if (geoState === "success") setGeoState("idle"); }} required />
                         </div>
                         <div className="form-group">
                           <label className="form-label" htmlFor="req-landmark">Nearby Landmark</label>
-                          <input id="req-landmark" className="form-input" type="text" placeholder="Near the Shell station on Oak Ave"
+                          <input id="req-landmark" className="form-input" type="text" placeholder={LOCALE.landmarkPlaceholder}
                             value={form.landmark} onChange={(e) => update("landmark", e.target.value)} />
                         </div>
                       </div>

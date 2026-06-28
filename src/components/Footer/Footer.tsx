@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LOCALE } from "@/lib/locale";
 import styles from "./Footer.module.css";
 
 const services = [
@@ -37,12 +38,12 @@ export default function Footer() {
             Road<span className={styles.accent}>Rescue</span>
           </Link>
           <p className={styles.tagline}>
-            24/7 roadside assistance, wherever you are. Help is always minutes away.
+            24/7 roadside assistance across Nigeria. Help is always minutes away.
           </p>
           <div className={styles.emergency}>
             <span className={styles.dot} />
             <span>Emergency: </span>
-            <a href="tel:+18005550199" className={styles.phone}>1-800-555-0199</a>
+            <a href={`tel:${LOCALE.emergencyTel}`} className={styles.phone}>{LOCALE.emergencyDisplay}</a>
           </div>
         </div>
 
@@ -89,8 +90,8 @@ export default function Footer() {
 
       <div className={styles.bottom}>
         <div className="container">
-          <p>© {new Date().getFullYear()} RoadRescue Inc. All rights reserved.</p>
-          <p>Built with care for stranded drivers everywhere.</p>
+          <p>© {new Date().getFullYear()} {LOCALE.companyName} All rights reserved.</p>
+          <p>Built with care for stranded drivers across Nigeria.</p>
         </div>
       </div>
     </footer>

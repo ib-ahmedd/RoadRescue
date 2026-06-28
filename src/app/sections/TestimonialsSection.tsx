@@ -2,49 +2,49 @@ import styles from "./TestimonialsSection.module.css";
 
 const testimonials = [
   {
-    name: "Marcus Johnson",
-    location: "Atlanta, GA",
-    avatar: "MJ",
+    name: "Chioma Okonkwo",
+    location: "Lagos",
+    avatar: "CO",
     rating: 5,
-    text: "My tire blew out on the highway at midnight. RoadRescue had a technician there in 22 minutes. Saved my night and probably my life. Worth every penny.",
+    text: "My tire blew out on the Lagos-Ibadan Expressway at midnight. RoadRescue had a technician there in 22 minutes. Saved my night — worth every naira.",
     service: "Flat Tire",
   },
   {
-    name: "Sarah Chen",
-    location: "Austin, TX",
-    avatar: "SC",
+    name: "Emeka Nwosu",
+    location: "Abuja",
+    avatar: "EN",
     rating: 5,
-    text: "I was terrified being stranded alone, but the app kept me updated every minute. The driver was professional, fast, and incredibly kind. 5 stars isn't enough.",
+    text: "I was terrified being stranded alone, but the app kept me updated every minute. The driver was professional, fast, and incredibly kind.",
     service: "Towing",
   },
   {
-    name: "David Okafor",
-    location: "Chicago, IL",
-    avatar: "DO",
+    name: "Ahmed Ibrahim",
+    location: "Kaduna",
+    avatar: "AI",
     rating: 5,
-    text: "Dead battery in a parking garage. Called RoadRescue and they showed up in 18 minutes. The tech even checked my alternator for free. Unbelievable service.",
+    text: "Dead battery at Kaduna Trade Fair. Called RoadRescue and they showed up in 18 minutes. The tech even checked my alternator for free.",
     service: "Battery Jump",
   },
   {
-    name: "Emily Torres",
-    location: "Miami, FL",
-    avatar: "ET",
+    name: "Blessing Eze",
+    location: "Port Harcourt",
+    avatar: "BE",
     rating: 5,
-    text: "Locked my keys in the car with my groceries melting in the Florida heat. RoadRescue unlocked it in 25 minutes. The live tracking was super reassuring.",
+    text: "Locked my keys in the car with groceries in the boot. RoadRescue unlocked it in 25 minutes. The live tracking was super reassuring.",
     service: "Lockout",
   },
   {
-    name: "Ryan Patel",
-    location: "Seattle, WA",
-    avatar: "RP",
+    name: "Tunde Adeyemi",
+    location: "Ibadan",
+    avatar: "TA",
     rating: 5,
-    text: "Best roadside service I've ever used. Clear pricing, real-time tracking, and incredibly professional technicians. This is how all service apps should work.",
+    text: "Best roadside service I've used in Nigeria. Clear pricing, real-time tracking, and professional technicians. This is how all service apps should work.",
     service: "Fuel Delivery",
   },
   {
-    name: "Aisha Williams",
-    location: "New York, NY",
-    avatar: "AW",
+    name: "Aisha Bello",
+    location: "Kano",
+    avatar: "AB",
     rating: 5,
     text: "Used RoadRescue twice now and both times were flawless. The technicians are well-trained and the app experience is seamless. Highly recommend!",
     service: "Towing",
@@ -74,7 +74,7 @@ export default function TestimonialsSection() {
             <span className="gradient-text">Real Customers</span>
           </h2>
           <p className={`body-lg ${styles.sub}`}>
-            Join over 50,000 drivers who trust RoadRescue when it matters most.
+            Join thousands of Nigerian drivers who trust RoadRescue when it matters most.
           </p>
         </div>
 

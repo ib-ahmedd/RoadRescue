@@ -5,9 +5,9 @@ import ContactForm from "./ContactForm";
 import styles from "./contact.module.css";
 
 export const metadata: Metadata = {
-  title: "Contact Us — RoadRescue",
-  description: "Get in touch with the RoadRescue team. We are available 24/7 for support, provider registration, billing, and general inquiries.",
-  keywords: "contact roadrescue, roadrescue support, towing company contact, help line",
+  title: "Contact Us — RoadRescue Nigeria",
+  description: "Get in touch with the RoadRescue Nigeria team. We are available 24/7 for support, provider registration, billing, and general inquiries.",
+  keywords: "contact roadrescue Nigeria, roadrescue support Lagos, towing company contact, breakdown helpline",
 };
 
 export default function ContactPage() {

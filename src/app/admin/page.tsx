@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
-import { API_BASE_URL } from "@/lib/api";
+import { apiFetch } from "@/lib/api";
 import styles from "./AdminDashboard.module.css";
 
 interface Provider {
@@ -60,7 +60,7 @@ export default function AdminPage() {
   // Fetch Requests
   const fetchRequests = useCallback(async (isPoll = false) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/requests`);
+      const res = await apiFetch("/api/requests", { bustCache: isPoll });
       if (res.ok) {
         const data = await res.json();
         setRequests(data);
@@ -73,9 +73,9 @@ export default function AdminPage() {
   }, []);
 
   // Fetch Providers
-  const fetchProviders = useCallback(async () => {
+  const fetchProviders = useCallback(async (isPoll = false) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/providers`);
+      const res = await apiFetch("/api/providers", { bustCache: isPoll });
       if (res.ok) {
         const data = await res.json();
         setProviders(data);
@@ -92,7 +92,7 @@ export default function AdminPage() {
     // Poll requests list every 4 seconds to sync in real time
     const interval = setInterval(() => {
       fetchRequests(true);
-      fetchProviders();
+      fetchProviders(true);
     }, 4000);
 
     return () => clearInterval(interval);
@@ -139,7 +139,7 @@ export default function AdminPage() {
   // Patch Request Helper
   const handleUpdateRequest = async (id: string, updates: Partial<RequestData>) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/requests`, {
+      const res = await apiFetch("/api/requests", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, ...updates }),
@@ -165,6 +165,7 @@ export default function AdminPage() {
   };
 
   const handleStatusChange = (request: RequestData, newStatus: RequestData["status"]) => {
+    if (newStatus === "completed") return;
     handleUpdateRequest(request.id, { status: newStatus });
   };
 
@@ -490,25 +491,25 @@ export default function AdminPage() {
                           <h3 className={styles.sectionTitle}>⚙️ Progress Controls</h3>
                           <div className={styles.statusSliderCard}>
                             <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-                              Change request progression manually:
+                              {activeRequest.status === "completed"
+                                ? "Completed after the customer confirmed on their tracking page."
+                                : "Change request progression manually. The customer confirms completion from their tracking link."}
                             </p>
                             <div className={styles.statusStepContainer}>
                               {[
                                 { key: "matched", label: "Matched" },
                                 { key: "en-route", label: "En Route" },
                                 { key: "arrived", label: "Arrived" },
-                                { key: "completed", label: "Complete" },
-                              ].map((step, idx) => {
+                              ].map((step) => {
                                 const isCurrent = activeRequest.status === step.key;
                                 return (
                                   <button
                                     key={step.key}
-                                    onClick={() => handleStatusChange(activeRequest, step.key as any)}
+                                    onClick={() => handleStatusChange(activeRequest, step.key as RequestData["status"])}
                                     className={`${styles.statusStepBtn} ${
-                                      isCurrent ? styles.statusStepBtnActive : 
-                                      activeRequest.status === "completed" ? styles.statusStepBtnCompleted :
-                                      ""
+                                      isCurrent ? styles.statusStepBtnActive : ""
                                     }`}
+                                    disabled={activeRequest.status === "completed"}
                                   >
                                     {step.label}
                                   </button>

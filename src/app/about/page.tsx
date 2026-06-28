@@ -4,8 +4,8 @@ import Footer from "@/components/Footer/Footer";
 import styles from "./about.module.css";
 
 export const metadata: Metadata = {
-  title: "About Us — RoadRescue",
-  description: "Learn about RoadRescue's mission, values, and the team dedicated to keeping drivers safe on the road.",
+  title: "About Us — RoadRescue Nigeria",
+  description: "Learn about RoadRescue Nigeria's mission, values, and the team dedicated to keeping drivers safe on Nigerian roads.",
 };
 
 const values = [
@@ -16,10 +16,10 @@ const values = [
 ];
 
 const team = [
-  { name: "Olivia Park",     role: "CEO & Co-Founder",     initials: "OP", bio: "15 years in logistics & emergency services." },
-  { name: "Marcus Reid",     role: "CTO",                  initials: "MR", bio: "Former Google Maps engineer, GPS tracking expert." },
-  { name: "Diane Torres",    role: "Head of Operations",   initials: "DT", bio: "Runs our nationwide network of technicians." },
-  { name: "Ahmad Hassan",    role: "Head of Engineering",  initials: "AH", bio: "Builds the systems that power 50K+ rescues." },
+  { name: "Adunni Okafor",   role: "CEO & Co-Founder",     initials: "AO", bio: "15 years in logistics and emergency services across West Africa." },
+  { name: "Chidi Eze",       role: "CTO",                  initials: "CE", bio: "Former fintech engineer, built real-time dispatch systems for Lagos." },
+  { name: "Fatima Bello",    role: "Head of Operations",   initials: "FB", bio: "Runs our network of technicians across Nigeria's 36 states and FCT." },
+  { name: "Emmanuel Adeyemi", role: "Head of Engineering", initials: "EA", bio: "Builds the systems that power 50K+ rescues across Nigeria." },
 ];
 
 export default function AboutPage() {
@@ -36,9 +36,9 @@ export default function AboutPage() {
               <span className="gradient-text">Because Being Stranded Sucks.</span>
             </h1>
             <p className={styles.heroSub}>
-              In 2019, our co-founder Olivia was stranded on I-285 at 2 AM with a blown tire and
-              a baby in the back seat. The roadside company she called took 90 minutes. That night,
-              RoadRescue was born.
+              In 2019, our co-founder Adunni was stranded on the Third Mainland Bridge at 2 AM with a blown tyre
+              and a baby in the back seat. The roadside company she called took 90 minutes. That night,
+              RoadRescue Nigeria was born.
             </p>
           </div>
         </section>
@@ -54,14 +54,14 @@ export default function AboutPage() {
                 </h2>
                 <p className={styles.missionText}>
                   Our mission is simple: make roadside assistance so fast, affordable, and reliable
-                  that no driver ever feels abandoned. We combine cutting-edge technology with a
+                  that no Nigerian driver ever feels abandoned. We combine cutting-edge technology with a
                   network of 2,000+ certified technicians to make this a reality.
                 </p>
                 <div className={styles.missionStats}>
                   {[
                     { v: "2019", l: "Founded" },
                     { v: "50K+", l: "Rescues" },
-                    { v: "200+", l: "Cities" },
+                    { v: "36+", l: "States Covered" },
                     { v: "2,000+", l: "Technicians" },
                   ].map((s) => (
                     <div key={s.l} className={styles.missionStat}>

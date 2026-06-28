@@ -29,7 +29,7 @@ export default function HeroSection() {
         <div className="animate-fadeInUp">
           <span className="badge badge-amber">
             <span style={{width:6,height:6,borderRadius:'50%',background:'var(--amber)',display:'inline-block',animation:'ping 2s infinite'}} />
-            Available 24/7 Nationwide
+            Available 24/7 Across Nigeria
           </span>
         </div>
 

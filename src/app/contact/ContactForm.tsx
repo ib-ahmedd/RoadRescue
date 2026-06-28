@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { API_BASE_URL } from "@/lib/api";
+import { LOCALE } from "@/lib/locale";
 import styles from "./contact.module.css";
 
 const subjects = [
@@ -70,7 +71,7 @@ export default function ContactForm() {
               </div>
               <div>
                 <div className={styles.itemLabel}>24/7 Support Hotline</div>
-                <div className={styles.itemValue}>+1 (800) 555-ROAD</div>
+                <div className={styles.itemValue}>{LOCALE.emergencyDisplay}</div>
               </div>
             </div>
 
@@ -84,7 +85,7 @@ export default function ContactForm() {
               </div>
               <div>
                 <div className={styles.itemLabel}>Email Address</div>
-                <div className={styles.itemValue}>support@roadrescue.com</div>
+                <div className={styles.itemValue}>{LOCALE.supportEmail}</div>
               </div>
             </div>
 
@@ -98,7 +99,7 @@ export default function ContactForm() {
               </div>
               <div>
                 <div className={styles.itemLabel}>Headquarters</div>
-                <div className={styles.itemValue}>100 Peachtree St NW, Atlanta, GA 30303</div>
+                <div className={styles.itemValue}>{LOCALE.headquarters}</div>
               </div>
             </div>
           </div>
@@ -116,7 +117,7 @@ export default function ContactForm() {
               <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
               <circle cx="12" cy="10" r="2" fill="currentColor"/>
             </svg>
-            <div className={styles.pinLabel}>Active Tow Truck SP-003</div>
+            <div className={styles.pinLabel}>Active Tow Truck KJA-456DE</div>
           </div>
 
           <div className={styles.radarTitle}>
@@ -125,7 +126,7 @@ export default function ContactForm() {
           </div>
 
           <div className={styles.radarCoords}>
-            LAT: 33.7490° N | LON: 84.3880° W
+            {LOCALE.radarCoords}
           </div>
         </div>
       </div>

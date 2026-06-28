@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { LOCALE } from "@/lib/locale";
 import styles from "./AuthForm.module.css";
 
 interface AuthFormProps {
@@ -74,7 +75,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           {!isLogin && (
             <div className="form-group">
               <label className="form-label" htmlFor="auth-name">Full Name</label>
-              <input id="auth-name" className="form-input" type="text" placeholder="John Smith"
+              <input id="auth-name" className="form-input" type="text" placeholder={LOCALE.namePlaceholder}
                 value={form.name} onChange={(e) => update("name", e.target.value)} required />
             </div>
           )}
@@ -88,7 +89,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           {!isLogin && (
             <div className="form-group">
               <label className="form-label" htmlFor="auth-phone">Phone Number</label>
-              <input id="auth-phone" className="form-input" type="tel" placeholder="+1 (555) 000-0000"
+              <input id="auth-phone" className="form-input" type="tel" placeholder={LOCALE.phonePlaceholder}
                 value={form.phone} onChange={(e) => update("phone", e.target.value)} required />
             </div>
           )}

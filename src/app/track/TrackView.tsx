@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { API_BASE_URL } from "@/lib/api";
+import { apiFetch, parseApiResponse } from "@/lib/api";
+import { LOCALE } from "@/lib/locale";
 import Link from "next/link";
 import styles from "./TrackView.module.css";
 
@@ -36,6 +37,7 @@ interface RequestData {
   status: "received" | "matched" | "en-route" | "arrived" | "completed";
   assignedProvider: Provider | null;
   contacted: boolean;
+  arrivalConfirmed: boolean;
   createdAt: string;
 }
 
@@ -68,6 +70,11 @@ export default function TrackView() {
   const [lookupId, setLookupId] = useState("");
   const [eta, setEta] = useState(15);
 
+  // Confirm arrival modal
+  const [showArrivalModal, setShowArrivalModal] = useState(false);
+  const [arrivalSubmitting, setArrivalSubmitting] = useState(false);
+  const prevStatusRef = useRef<string | null>(null);
+
   // Confirm completion modal
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmSubmitting, setConfirmSubmitting] = useState(false);
@@ -79,31 +86,38 @@ export default function TrackView() {
   const [disputeSubmitting, setDisputeSubmitting] = useState(false);
   const [disputeSuccess, setDisputeSuccess] = useState(false);
   const [disputeId, setDisputeId] = useState("");
+  const [syncWarning, setSyncWarning] = useState("");
 
   const fetchRequest = useCallback(async (id: string, isPoll = false) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/requests?id=${id}`);
+      const response = await apiFetch(
+        `/api/requests?id=${encodeURIComponent(id)}`,
+        { bustCache: isPoll }
+      );
+
       if (response.ok) {
-        const data = await response.json();
+        const data = await parseApiResponse<RequestData>(response);
         setRequest(data);
         setError("");
-        
-        // Dynamic mock ETA based on status
+        setSyncWarning("");
+
         if (data.status === "received") setEta(20);
         else if (data.status === "matched") setEta(15);
         else if (data.status === "en-route") setEta(8);
         else if (data.status === "arrived") setEta(0);
         else if (data.status === "completed") setEta(0);
+      } else if (!isPoll) {
+        setError("Request not found. Please double check the ID.");
+        setRequest(null);
       } else {
-        if (!isPoll) {
-          setError("Request not found. Please double check the ID.");
-          setRequest(null);
-        }
+        setSyncWarning("Live updates paused — reconnecting to the server…");
       }
     } catch (err) {
       console.error("Error fetching request:", err);
       if (!isPoll) {
-        setError("Failed to connect to the server.");
+        setError(err instanceof Error ? err.message : "Failed to connect to the server.");
+      } else {
+        setSyncWarning("Live updates paused — reconnecting to the server…");
       }
     } finally {
       if (!isPoll) setLoading(false);
@@ -112,6 +126,8 @@ export default function TrackView() {
 
   // Fetch on load and set up polling
   useEffect(() => {
+    prevStatusRef.current = null;
+
     if (requestId) {
       setLoading(true);
       fetchRequest(requestId);
@@ -126,6 +142,22 @@ export default function TrackView() {
     }
   }, [requestId, fetchRequest]);
 
+  // Auto-show arrival confirmation when technician marks status as arrived
+  useEffect(() => {
+    if (!request) return;
+
+    const justArrived =
+      request.status === "arrived" &&
+      !request.arrivalConfirmed &&
+      prevStatusRef.current !== "arrived";
+
+    if (justArrived) {
+      setShowArrivalModal(true);
+    }
+
+    prevStatusRef.current = request.status;
+  }, [request?.status, request?.arrivalConfirmed, request]);
+
   const handleLookup = (e: React.FormEvent) => {
     e.preventDefault();
     if (lookupId.trim()) {
@@ -133,25 +165,23 @@ export default function TrackView() {
     }
   };
 
-  const handleDemoStatus = async (newStatusKey: string) => {
+  const handleConfirmArrival = async () => {
     if (!request) return;
-    // If advancing to "completed", show the confirmation modal instead
-    if (newStatusKey === "completed") {
-      setShowConfirmModal(true);
-      return;
-    }
+    setArrivalSubmitting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/requests`, {
-        method: "PATCH",
+      const res = await apiFetch("/api/requests/confirm-arrival", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: request.id, status: newStatusKey }),
+        body: JSON.stringify({ id: request.id }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        setRequest(data);
-      }
+      const data = await parseApiResponse<RequestData>(res);
+      setRequest(data);
+      setShowArrivalModal(false);
     } catch (err) {
-      console.error("Failed to update status:", err);
+      console.error("Failed to confirm arrival:", err);
+      alert(err instanceof Error ? err.message : "Could not confirm arrival.");
+    } finally {
+      setArrivalSubmitting(false);
     }
   };
 
@@ -159,18 +189,17 @@ export default function TrackView() {
     if (!request) return;
     setConfirmSubmitting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/requests`, {
-        method: "PATCH",
+      const res = await apiFetch("/api/requests/confirm-completion", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: request.id, status: "completed" }),
+        body: JSON.stringify({ id: request.id }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        setRequest(data);
-        setShowConfirmModal(false);
-      }
+      const data = await parseApiResponse<RequestData>(res);
+      setRequest(data);
+      setShowConfirmModal(false);
     } catch (err) {
       console.error("Failed to confirm completion:", err);
+      alert(err instanceof Error ? err.message : "Could not confirm completion.");
     } finally {
       setConfirmSubmitting(false);
     }
@@ -181,7 +210,7 @@ export default function TrackView() {
     if (!request || !disputeDescription.trim()) return;
     setDisputeSubmitting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/disputes`, {
+      const res = await apiFetch("/api/disputes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -226,6 +255,11 @@ export default function TrackView() {
             {request && (
               <p className={styles.pageSub}>
                 Request ID: <strong style={{ color: "var(--amber)", fontFamily: "monospace" }}>{request.id}</strong>
+                {syncWarning && (
+                  <span style={{ display: "block", marginTop: "0.35rem", color: "var(--warning, #f59e0b)", fontSize: "0.85rem" }}>
+                    {syncWarning}
+                  </span>
+                )}
               </p>
             )}
           </div>
@@ -289,12 +323,32 @@ export default function TrackView() {
                 </div>
               </div>
 
-              {/* Completion confirmation banner — shown when status is "arrived" */}
-              {request.status === "arrived" && (
+              {/* Pending arrival confirmation */}
+              {request.status === "arrived" && !request.arrivalConfirmed && (
                 <div className={styles.confirmBanner}>
                   <div className={styles.confirmBannerIcon}>📍</div>
                   <div className={styles.confirmBannerText}>
-                    <p className={styles.confirmBannerTitle}>Technician has arrived!</p>
+                    <p className={styles.confirmBannerTitle}>Confirm technician arrival</p>
+                    <p className={styles.confirmBannerSub}>
+                      Your technician has marked themselves as arrived. Please confirm they are at your location.
+                    </p>
+                  </div>
+                  <button
+                    id="confirm-arrival-btn"
+                    className="btn btn-primary btn-sm"
+                    onClick={() => setShowArrivalModal(true)}
+                  >
+                    Confirm Arrival
+                  </button>
+                </div>
+              )}
+
+              {/* Completion confirmation — after arrival is confirmed */}
+              {request.status === "arrived" && request.arrivalConfirmed && (
+                <div className={styles.confirmBanner}>
+                  <div className={styles.confirmBannerIcon}>✅</div>
+                  <div className={styles.confirmBannerText}>
+                    <p className={styles.confirmBannerTitle}>Technician is on site</p>
                     <p className={styles.confirmBannerSub}>Once the job is done, confirm completion below.</p>
                   </div>
                   <button
@@ -302,7 +356,7 @@ export default function TrackView() {
                     className="btn btn-success btn-sm"
                     onClick={() => setShowConfirmModal(true)}
                   >
-                    ✅ Confirm Completion
+                    Confirm Completion
                   </button>
                 </div>
               )}
@@ -384,26 +438,6 @@ export default function TrackView() {
                     </div>
                   ))}
                 </div>
-              </div>
-
-              {/* Demo controls */}
-              <div className={styles.demoControls}>
-                <p className={styles.demoLabel}>🎮 Demo: Simulate status change</p>
-                <div className={styles.demoRow}>
-                  <button className="btn btn-outline btn-sm" id="demo-prev"
-                    onClick={() => handleDemoStatus(STATUSES[Math.max(currentStatusIndex - 1, 0)].key)}
-                    disabled={currentStatusIndex === 0}>← Previous</button>
-                  <button className="btn btn-primary btn-sm" id="demo-next"
-                    onClick={() => handleDemoStatus(STATUSES[Math.min(currentStatusIndex + 1, STATUSES.length - 1)].key)}
-                    disabled={currentStatusIndex === STATUSES.length - 1 || (!request.assignedProvider && currentStatusIndex === 0)}>
-                    Next Status →
-                  </button>
-                </div>
-                {!request.assignedProvider && currentStatusIndex === 0 && (
-                  <p style={{ fontSize: "0.75rem", color: "var(--amber)", marginTop: "0.5rem" }}>
-                    ℹ️ You can assign a provider in the Admin Dashboard to advance the status.
-                  </p>
-                )}
               </div>
             </div>
 
@@ -490,7 +524,7 @@ export default function TrackView() {
                   <p className={styles.emergencyTitle}>Need immediate help?</p>
                   <p className={styles.emergencySub}>Call our 24/7 emergency line</p>
                 </div>
-                <a href="tel:+18005550199" className="btn btn-danger btn-sm" id="track-emergency-call">
+                <a href={`tel:${LOCALE.emergencyTel}`} className="btn btn-danger btn-sm" id="track-emergency-call">
                   Call Now
                 </a>
               </div>
@@ -502,6 +536,48 @@ export default function TrackView() {
           </div>
         )}
       </div>
+
+      {/* ── Confirm Arrival Modal ── */}
+      {showArrivalModal && request && (
+        <div className={styles.modalOverlay} onClick={() => !arrivalSubmitting && setShowArrivalModal(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalIcon}>📍</div>
+            <h3 className={styles.modalTitle}>Technician Has Arrived</h3>
+            <p className={styles.modalDesc}>
+              {request.assignedProvider ? (
+                <>
+                  <strong>{request.assignedProvider.name}</strong> has marked themselves as arrived at your location.
+                  Please confirm they are with you before service begins.
+                </>
+              ) : (
+                <>Your technician has marked themselves as arrived. Please confirm they are at your location.</>
+              )}
+            </p>
+            <div className={styles.modalNote}>
+              <span>ℹ️</span>
+              <span>If they haven&apos;t arrived yet, tap &quot;Not Yet&quot; and we&apos;ll keep tracking their status.</span>
+            </div>
+            <div className={styles.modalActions}>
+              <button
+                id="cancel-arrival-btn"
+                className="btn btn-outline"
+                onClick={() => setShowArrivalModal(false)}
+                disabled={arrivalSubmitting}
+              >
+                Not Yet
+              </button>
+              <button
+                id="submit-arrival-btn"
+                className="btn btn-primary"
+                onClick={handleConfirmArrival}
+                disabled={arrivalSubmitting}
+              >
+                {arrivalSubmitting ? "Confirming..." : "Yes, They've Arrived"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Confirm Completion Modal ── */}
       {showConfirmModal && (

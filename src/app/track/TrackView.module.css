@@ -162,16 +162,6 @@
 .current .tLabel { color: var(--text-primary); font-weight: 700; }
 .tIcon { font-size: 0.9rem; }
 
-/* Demo controls */
-.demoControls {
-  background: rgba(59,130,246,0.06);
-  border: 1px solid rgba(59,130,246,0.2);
-  border-radius: var(--r-md);
-  padding: 1rem 1.25rem;
-}
-.demoLabel { font-size: 0.78rem; color: var(--info); margin-bottom: 0.75rem; font-weight: 500; }
-.demoRow   { display: flex; gap: 0.6rem; }
-
 /* ── Right Panel ────────────────────────────────────────── */
 .right { display: flex; flex-direction: column; gap: 1.25rem; }
 

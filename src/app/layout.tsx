@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "RoadRescue — 24/7 Roadside Assistance",
-  description: "Fast, reliable roadside assistance whenever and wherever you need it. Towing, battery jump, flat tire, and fuel delivery — help is just minutes away.",
-  keywords: "roadside assistance, towing, breakdown, flat tire, battery jump, fuel delivery",
+  title: "RoadRescue — 24/7 Roadside Assistance in Nigeria",
+  description: "Fast, reliable roadside assistance across Nigeria. Towing, battery jump, flat tire, and fuel delivery — help is just minutes away.",
+  keywords: "roadside assistance Nigeria, towing Lagos, breakdown Kaduna, flat tire Abuja, battery jump, fuel delivery",
   openGraph: {
-    title: "RoadRescue — 24/7 Roadside Assistance",
-    description: "Fast, reliable roadside assistance whenever and wherever you need it.",
+    title: "RoadRescue — 24/7 Roadside Assistance in Nigeria",
+    description: "Fast, reliable roadside assistance across Nigeria.",
     type: "website",
   },
 };

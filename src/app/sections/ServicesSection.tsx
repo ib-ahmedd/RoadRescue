@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SERVICE_PRICES } from "@/lib/locale";
 import styles from "./ServicesSection.module.css";
 
 const services = [
@@ -7,7 +8,7 @@ const services = [
     title: "Towing",
     desc: "Light, medium, and heavy-duty towing to the nearest garage or destination of your choice. Available 24/7.",
     eta: "~30 min",
-    price: "From $75",
+    price: SERVICE_PRICES.towing,
     color: "#f59e0b",
   },
   {
@@ -15,23 +16,23 @@ const services = [
     title: "Battery Jump Start",
     desc: "Dead battery? Our technicians bring portable boosters and can test your battery health on the spot.",
     eta: "~20 min",
-    price: "From $35",
+    price: SERVICE_PRICES.battery,
     color: "#3b82f6",
   },
   {
     icon: "🔧",
     title: "Flat Tire Change",
-    desc: "We'll swap out your flat with your spare or apply a temporary fix to get you safely to a tire shop.",
+    desc: "We'll swap out your flat with your spare or apply a temporary fix to get you safely to a tyre shop.",
     eta: "~25 min",
-    price: "From $45",
+    price: SERVICE_PRICES["flat-tire"],
     color: "#22c55e",
   },
   {
     icon: "⛽",
     title: "Fuel Delivery",
-    desc: "Ran out of gas? We deliver up to 3 gallons of fuel to get you to the nearest station.",
+    desc: "Ran out of petrol? We deliver fuel to get you to the nearest filling station.",
     eta: "~25 min",
-    price: "From $40",
+    price: SERVICE_PRICES.fuel,
     color: "#a855f7",
   },
   {
@@ -39,7 +40,7 @@ const services = [
     title: "Lockout Service",
     desc: "Locked your keys inside? Our certified locksmiths will have you back in your vehicle fast.",
     eta: "~35 min",
-    price: "From $55",
+    price: SERVICE_PRICES.lockout,
     color: "#ef4444",
   },
   {
@@ -47,7 +48,7 @@ const services = [
     title: "Minor Repairs",
     desc: "On-site fixes for belt replacements, hose issues, and other minor mechanical problems.",
     eta: "~45 min",
-    price: "From $60",
+    price: SERVICE_PRICES.repair,
     color: "#f97316",
   },
 ];
