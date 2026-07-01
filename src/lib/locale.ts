@@ -24,3 +24,16 @@ export const SERVICE_PRICES: Record<string, string> = {
   lockout: "From ₦15,000",
   repair: "From ₦18,000",
 };
+
+export const SERVICE_BOOKING_FEES: Record<string, number> = {
+  towing: 5000,
+  battery: 3000,
+  "flat-tire": 3500,
+  fuel: 2500,
+  lockout: 3500,
+  repair: 4000,
+};
+
+export function formatNaira(amount: number): string {
+  return `₦${amount.toLocaleString("en-NG")}`;
+}

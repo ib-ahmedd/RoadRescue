@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ThemeToggle from "@/components/ThemeToggle/ThemeToggle";
 import styles from "./Navbar.module.css";
 
 const navLinks = [
@@ -67,6 +68,7 @@ export default function Navbar() {
 
         {/* Desktop CTAs */}
         <div className={styles.actions}>
+          <ThemeToggle />
           <Link href="/login" className="btn btn-outline btn-sm" id="nav-login">
             Sign In
           </Link>
@@ -104,6 +106,10 @@ export default function Navbar() {
           ))}
         </ul>
         <div className={styles.drawerActions}>
+          <div className={styles.drawerThemeRow}>
+            <span>Appearance</span>
+            <ThemeToggle />
+          </div>
           <Link href="/login" className="btn btn-outline w-full" id="mobile-login">Sign In</Link>
           <Link href="/request" className="btn btn-primary w-full" id="mobile-request">
             🚨 Request Help Now

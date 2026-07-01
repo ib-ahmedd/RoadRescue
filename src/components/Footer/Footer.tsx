@@ -12,7 +12,6 @@ const services = [
 const company  = [
   { label: "About Us",   href: "/about" },
   { label: "Contact",    href: "/contact" },
-  { label: "Admin Portal", href: "/admin" },
   { label: "Join Our Team", href: "/join" },
 ];
 const legal = [
